@@ -1,6 +1,5 @@
-package org.example;
+package org.example.vista;
 
-import org.example.vista.MainFX;
 
 public class Main {
     public static void main(String[] args) {
