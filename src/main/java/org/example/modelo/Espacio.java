@@ -1,63 +1,47 @@
 package org.example.modelo;
 
-public class Espacio {
-    private int id;
+import java.io.Serializable;
+
+public class Espacio implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private String idEspacio;
     private String nombre;
     private String tipo;
     private int capacidad;
     private boolean disponible;
 
-    public Espacio(int id, String nombre, String tipo, int capacidad, boolean disponible) {
-        this.id = id;
+    public Espacio() {}
+
+    public Espacio(String idEspacio, String nombre, String tipo, int capacidad, boolean disponible) {
+        this.idEspacio = idEspacio;
         this.nombre = nombre;
         this.tipo = tipo;
         this.capacidad = capacidad;
         this.disponible = disponible;
     }
 
-    public Espacio() {
+
+    public Espacio(int idEspacio, String nombre, String tipo, int capacidad, boolean disponible) {
+        this(String.valueOf(idEspacio), nombre, tipo, capacidad, disponible);
     }
 
+    public String getIdEspacio() { return idEspacio; }
+    public void setIdEspacio(String idEspacio) { this.idEspacio = idEspacio; }
 
+    public String getId() { return idEspacio; }
 
-    //getter y setter
-    public int getId() {
-        return id;
-    }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public String getTipo() { return tipo; }
+    public void setTipo(String tipo) { this.tipo = tipo; }
 
-    public String getNombre() {
-        return nombre;
-    }
+    public int getCapacidad() { return capacidad; }
+    public void setCapacidad(int capacidad) { this.capacidad = capacidad; }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+    public boolean isDisponible() { return disponible; }
+    public void setDisponible(boolean disponible) { this.disponible = disponible; }
 
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
-
-    public int getCapacidad() {
-        return capacidad;
-    }
-
-    public void setCapacidad(int capacidad) {
-        this.capacidad = capacidad;
-    }
-
-    public boolean isDisponible() {
-        return disponible;
-    }
-
-    public void setDisponible(boolean disponible) {
-        this.disponible = disponible;
-    }
+    @Override
+    public String toString() { return idEspacio + " - " + nombre + " (Cap: " + capacidad + ")"; }
 }
