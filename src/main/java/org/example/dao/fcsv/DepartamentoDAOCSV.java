@@ -18,9 +18,10 @@ public class DepartamentoDAOCSV implements DepartamentoDAO {
             String linea;
             while ((linea = br.readLine()) != null) {
                 if (linea.trim().isEmpty()) continue;
-                String[] partes = linea.split(";");
-                if (partes.length >= 2) {
-                    lista.add(new Departamento(partes[0].trim(), partes[1].trim()));
+                String[] p = linea.split(";");
+
+                if (p.length >= 2) {
+                    lista.add(new Departamento(p[0].trim(), p[1].trim()));
                 }
             }
         }

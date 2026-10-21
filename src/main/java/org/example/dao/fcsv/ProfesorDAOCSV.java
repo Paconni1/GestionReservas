@@ -23,18 +23,21 @@ public class ProfesorDAOCSV implements ProfesorDAO {
             while ((linea = br.readLine()) != null) {
                 if (linea.trim().isEmpty()) continue;
                 String[] p = linea.split(";");
-                if (p.length >= 4) {
+
+                // El CSV de la profe tiene 5 columnas
+                if (p.length >= 5) {
                     String idProf = p[0].trim();
-                    String nombre = p[1].trim();
-                    String email = p[2].trim();
-                    String idDep = p[3].trim();
+                    // Juntamos el nombre y los apellidos con un espacio en medio
+                    String nombreCompleto = p[1].trim() + " " + p[2].trim();
+                    String email = p[3].trim();
+                    String idDep = p[4].trim();
 
                     Departamento dep = departamentos.stream()
-                            .filter(d -> d.getIdDepartamento().equals(idDep))
+                            .filter(d -> d.getIdDepartamento().equalsIgnoreCase(idDep))
                             .findFirst()
                             .orElse(new Departamento(idDep, idDep));
 
-                    lista.add(new Profesor(idProf, nombre, email, dep));
+                    lista.add(new Profesor(idProf, nombreCompleto, email, dep));
                 }
             }
         }
@@ -49,7 +52,9 @@ public class ProfesorDAOCSV implements ProfesorDAO {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(fichero))) {
             for (Profesor p : profesores) {
                 String idDep = (p.getDepartamento() != null) ? p.getDepartamento().getIdDepartamento() : "";
-                bw.write(p.getIdProfesor() + ";" + p.getNombre() + ";" + p.getEmail() + ";" + idDep);
+
+                // Para mantener el formato de 5 columnas, metemos el nombre en la 1 y dejamos un "-" en la de apellidos
+                bw.write(p.getIdProfesor() + ";" + p.getNombre() + ";-;" + p.getEmail() + ";" + idDep);
                 bw.newLine();
             }
         }

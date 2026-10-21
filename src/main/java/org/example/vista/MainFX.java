@@ -15,6 +15,7 @@ import org.example.servicio.CentroEducativo;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 
 public class MainFX extends Application {
@@ -23,13 +24,21 @@ public class MainFX extends Application {
 
     public static void main(String[] args){ launch(args); }
 
-    @Override public void start(Stage stage){
-//        try{
-//            centro=new CentroEducativo(new DepartamentoDAOCSV(),new ProfesorDAOCSV(),new EspacioDAOCSV(),new ReservaDAOCSV());
-//        }catch(IOException e){ mostrarError("Error al cargar los CSV",e.getMessage()); return; }
-        root.setTop(crearMenu()); root.setCenter(pantallaInicio());
-        stage.setScene(new Scene(root,1100,680));
-        stage.setTitle("Gestión de reservas - Centro Educativo (CSV)");
+    @Override
+    public void start(Stage stage) {
+        try {
+
+            centro = new CentroEducativo(new DepartamentoDAOCSV(), new ProfesorDAOCSV(), new EspacioDAOCSV(), new ReservaDAOCSV());
+        } catch(IOException e) {
+            mostrarError("Error al cargar los datos", e.getMessage());
+
+            return;
+        }
+
+        root.setTop(crearMenu());
+        root.setCenter(pantallaInicio());
+        stage.setScene(new Scene(root, 1100, 680));
+        stage.setTitle("Gestión de reservas - Centro Educativo");
         stage.show();
     }
 
@@ -70,16 +79,20 @@ public class MainFX extends Application {
         TableColumn<Departamento,String> nombre=new TableColumn<>("Nombre"); nombre.setCellValueFactory(d->new SimpleStringProperty(d.getValue().getNombre()));
         tabla.getColumns().addAll(id,nombre); cargar(tabla,centro.getDepartamentos());
         Button eliminar=new Button("Eliminar seleccionado");
-      //  eliminar.setOnAction(e->{ Departamento d=tabla.getSelectionModel().getSelectedItem(); if(d==null){mostrarError("Aviso","Seleccione un departamento.");return;} try{centro.bajaDepartamento(d.getId());cargar(tabla,centro.getDepartamentos());}catch(Exception ex){mostrarError("No se puede eliminar",ex.getMessage());}});
+       eliminar.setOnAction(e->{ Departamento d=tabla.getSelectionModel().getSelectedItem(); if(d==null){mostrarError("Aviso","Seleccione un departamento.");return;} try{centro.bajaDepartamento(d.getId());cargar(tabla,centro.getDepartamentos());}catch(Exception ex){mostrarError("No se puede eliminar",ex.getMessage());}});
         return contenedor("DEPARTAMENTOS",tabla,eliminar);
     }
 
     private VBox pantallaAltaDepartamento(){
         TextField id=campo("ID"), nombre=campo("Nombre"); Button guardar=new Button("Guardar");
         guardar.setOnAction(e->{
-         //   try{
-        //    centro.altaDepartamento(new Departamento(Integer.parseInt(id.getText().trim()),nombre.getText().trim()));mostrarInfo("Departamento creado.");root.setCenter(pantallaDepartamentos());}catch(Exception ex){mostrarError("Error",ex.getMessage());
-        //    }
+            try{
+                centro.altaDepartamento(new Departamento(id.getText().trim(), nombre.getText().trim()));
+                mostrarInfo("Departamento creado.");
+                root.setCenter(pantallaDepartamentos());
+            }catch(Exception ex){
+                mostrarError("Error",ex.getMessage());
+            }
         });
         return formulario("NUEVO DEPARTAMENTO",new Control[]{id,nombre,guardar},new String[]{"ID","Nombre"});
     }
@@ -92,7 +105,7 @@ public class MainFX extends Application {
         TableColumn<Profesor,String> dep=new TableColumn<>("Departamento"); dep.setCellValueFactory(d->new SimpleStringProperty(d.getValue().getDepartamento()==null?"":d.getValue().getDepartamento().getNombre()));
         tabla.getColumns().addAll(id,nombre,email,dep); cargar(tabla,centro.getProfesores());
         Button eliminar=new Button("Eliminar seleccionado");
-       // eliminar.setOnAction(e->{Profesor p=tabla.getSelectionModel().getSelectedItem();if(p==null){mostrarError("Aviso","Seleccione un profesor.");return;}try{centro.bajaProfesor(p.getId());cargar(tabla,centro.getProfesores());}catch(Exception ex){mostrarError("No se puede eliminar",ex.getMessage());}});
+        eliminar.setOnAction(e->{Profesor p=tabla.getSelectionModel().getSelectedItem();if(p==null){mostrarError("Aviso","Seleccione un profesor.");return;}try{centro.bajaProfesor(p.getId());cargar(tabla,centro.getProfesores());}catch(Exception ex){mostrarError("No se puede eliminar",ex.getMessage());}});
         return contenedor("PROFESORES",tabla,eliminar);
     }
 
@@ -100,7 +113,17 @@ public class MainFX extends Application {
         TextField id=campo("ID"),nombre=campo("Nombre"),email=campo("Email");
         ComboBox<Departamento> dep=new ComboBox<>(FXCollections.observableArrayList(centro.getDepartamentos())); dep.setMaxWidth(Double.MAX_VALUE);
         Button guardar=new Button("Guardar");
-   //     guardar.setOnAction(e->{try{centro.altaProfesor(new Profesor(Integer.parseInt(id.getText().trim()),nombre.getText().trim(),email.getText().trim(),dep.getValue()));mostrarInfo("Profesor creado.");root.setCenter(pantallaProfesores());}catch(Exception ex){mostrarError("Error",ex.getMessage());}});
+
+        guardar.setOnAction(e->{
+            try{
+                centro.altaProfesor(new Profesor(id.getText().trim(),nombre.getText().trim(),email.getText().trim(),dep.getValue()));
+                mostrarInfo("Profesor creado.");
+                root.setCenter(pantallaProfesores());
+            }catch(Exception ex){
+                mostrarError("Error",ex.getMessage());
+            }
+        });
+
         VBox b=new VBox(10);b.setPadding(new Insets(30));Label t=new Label("NUEVO PROFESOR");t.setStyle("-fx-font-size:22px;-fx-font-weight:bold;");b.getChildren().addAll(t,new Label("ID"),id,new Label("Nombre"),nombre,new Label("Email"),email,new Label("Departamento"),dep,guardar);return b;
     }
 
@@ -118,14 +141,25 @@ public class MainFX extends Application {
               mostrarError("Aviso","Seleccione un espacio.");
               return;
           }
-          //centro.modificarDisponibilidadEspacio(x.getId(),!x.isDisponible());
+          centro.modificarDisponibilidadEspacio(x.getId(),!x.isDisponible());
           tabla.refresh();});
         return contenedor("ESPACIOS",tabla,cambiar);
     }
 
     private VBox pantallaAltaEspacio(){
-        TextField id=campo("ID"),nombre=campo("Nombre"),tipo=campo("Tipo"),cap=campo("Capacidad");CheckBox disponible=new CheckBox("Disponible");disponible.setSelected(true);Button guardar=new Button("Guardar");
-      //  guardar.setOnAction(e->{try{centro.altaEspacio(new Espacio(Integer.parseInt(id.getText().trim()),nombre.getText().trim(),tipo.getText().trim(),Integer.parseInt(cap.getText().trim()),disponible.isSelected()));mostrarInfo("Espacio creado.");root.setCenter(pantallaEspacios());}catch(Exception ex){mostrarError("Error",ex.getMessage());}});
+        TextField id=campo("ID"),nombre=campo("Nombre"),tipo=campo("Tipo"),cap=campo("Capacidad");CheckBox disponible=new CheckBox("Disponible");disponible.setSelected(true);
+        Button guardar=new Button("Guardar");
+
+        guardar.setOnAction(e->{
+            try{
+                centro.altaEspacio(new Espacio(id.getText().trim(),nombre.getText().trim(),tipo.getText().trim(),Integer.parseInt(cap.getText().trim()),disponible.isSelected()));
+                mostrarInfo("Espacio creado.");
+                root.setCenter(pantallaEspacios());
+            }catch(Exception ex){
+                mostrarError("Error",ex.getMessage());
+            }
+        });
+
         VBox b=new VBox(10);b.setPadding(new Insets(30));Label t=new Label("NUEVO ESPACIO");t.setStyle("-fx-font-size:22px;-fx-font-weight:bold;");b.getChildren().addAll(t,new Label("ID"),id,new Label("Nombre"),nombre,new Label("Tipo"),tipo,new Label("Capacidad"),cap,disponible,guardar);return b;
     }
 
@@ -146,7 +180,7 @@ public class MainFX extends Application {
                 mostrarError("Aviso","Seleccione una reserva.");
                 return;
             }
-            //try{centro.cancelarReserva(r.getId());tabla.refresh();}catch(Exception ex){mostrarError("Error",ex.getMessage());}
+            try{centro.cancelarReserva(r.getId());tabla.refresh();}catch(Exception ex){mostrarError("Error",ex.getMessage());}
         });
         return contenedor("RESERVAS",tabla,cancelar);
     }
@@ -155,9 +189,18 @@ public class MainFX extends Application {
         TextField id=campo("ID"),inicio=campo("HH:mm"),fin=campo("HH:mm"),asist=campo("Número de asistentes");DatePicker fecha=new DatePicker(LocalDate.now());
         ComboBox<Profesor> profesor=new ComboBox<>(FXCollections.observableArrayList(centro.getProfesores()));
         ComboBox<Espacio> espacio=new ComboBox<>(FXCollections.observableArrayList(centro.getEspacios()));profesor.setMaxWidth(Double.MAX_VALUE);espacio.setMaxWidth(Double.MAX_VALUE);
-        Button guardar=new Button("Crear reserva");guardar.setOnAction(e->{
-        //    try{centro.crearReserva(new Reserva(Integer.parseInt(id.getText().trim()),fecha.getValue(),LocalTime.parse(inicio.getText().trim()),LocalTime.parse(fin.getText().trim()),profesor.getValue(),espacio.getValue(),Integer.parseInt(asist.getText().trim()),EstadoReserva.CONFIRMADA));mostrarInfo("Reserva creada.");root.setCenter(pantallaReservas());}catch(Exception ex){mostrarError("No se puede crear la reserva",ex.getMessage());}
+        Button guardar=new Button("Crear reserva");
+
+        guardar.setOnAction(e->{
+            try{
+                centro.crearReserva(new Reserva(id.getText().trim(),fecha.getValue(),LocalTime.parse(inicio.getText().trim()),LocalTime.parse(fin.getText().trim()),profesor.getValue(),espacio.getValue(),Integer.parseInt(asist.getText().trim()),EstadoReserva.CONFIRMADA));
+                mostrarInfo("Reserva creada.");
+                root.setCenter(pantallaReservas());
+            }catch(Exception ex){
+                mostrarError("No se puede crear la reserva",ex.getMessage());
+            }
         });
+
         VBox b=new VBox(10);b.setPadding(new Insets(30));Label t=new Label("NUEVA RESERVA");t.setStyle("-fx-font-size:22px;-fx-font-weight:bold;");b.getChildren().addAll(t,new Label("ID"),id,new Label("Fecha"),fecha,new Label("Profesor"),profesor,new Label("Espacio"),espacio,new Label("Hora inicio (HH:mm)"),inicio,new Label("Hora fin (HH:mm)"),fin,new Label("Asistentes"),asist,guardar);return b;
     }
 
