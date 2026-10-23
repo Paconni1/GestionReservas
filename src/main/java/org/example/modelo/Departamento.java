@@ -22,14 +22,24 @@ public class Departamento implements Serializable {
         this(String.valueOf(idDepartamento), nombre);
     }
 
-    public String getIdDepartamento() { return idDepartamento; }
-    public void setIdDepartamento(String idDepartamento) { this.idDepartamento = idDepartamento; }
+    public String getIdDepartamento() {
+        return idDepartamento;
+    }
+    public void setIdDepartamento(String idDepartamento) {
+        this.idDepartamento = idDepartamento;
+    }
 
 
-    public String getId() { return idDepartamento; }
+    public String getId() {
+        return idDepartamento;
+    }
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    public String getNombre() {
+        return nombre;
+    }
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -40,8 +50,12 @@ public class Departamento implements Serializable {
     }
 
     @Override
-    public int hashCode() { return Objects.hash(idDepartamento); }
+    public int hashCode() {
+        return Objects.hash(idDepartamento);
+    }
 
     @Override
-    public String toString() { return idDepartamento + " - " + nombre; }
+    public String toString() {
+        return idDepartamento + " - " + nombre;
+    }
 }

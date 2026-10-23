@@ -24,10 +24,10 @@ public class ProfesorDAOCSV implements ProfesorDAO {
                 if (linea.trim().isEmpty()) continue;
                 String[] p = linea.split(";");
 
-                // El CSV de la profe tiene 5 columnas
+
                 if (p.length >= 5) {
                     String idProf = p[0].trim();
-                    // Juntamos el nombre y los apellidos con un espacio en medio
+
                     String nombreCompleto = p[1].trim() + " " + p[2].trim();
                     String email = p[3].trim();
                     String idDep = p[4].trim();
@@ -53,7 +53,6 @@ public class ProfesorDAOCSV implements ProfesorDAO {
             for (Profesor p : profesores) {
                 String idDep = (p.getDepartamento() != null) ? p.getDepartamento().getIdDepartamento() : "";
 
-                // Para mantener el formato de 5 columnas, metemos el nombre en la 1 y dejamos un "-" en la de apellidos
                 bw.write(p.getIdProfesor() + ";" + p.getNombre() + ";-;" + p.getEmail() + ";" + idDep);
                 bw.newLine();
             }

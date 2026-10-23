@@ -232,7 +232,7 @@ public class CentroEducativo {
     }
 
     public void crearReserva(Reserva nueva) throws IOException {
-        // Regla 1: ID único
+
         if (nueva.getIdReserva() == null || nueva.getIdReserva().isEmpty()) {
             throw new IllegalArgumentException("El ID de la reserva es obligatorio.");
         }
@@ -240,7 +240,7 @@ public class CentroEducativo {
             throw new IllegalArgumentException("Ya existe una reserva con el ID: " + nueva.getIdReserva());
         }
 
-        // Validar Profesor y Espacio
+
         if (nueva.getProfesor() == null || buscarProfesor(nueva.getProfesor().getIdProfesor()) == null) {
             throw new IllegalArgumentException("Debe seleccionar un profesor válido.");
         }
@@ -249,23 +249,23 @@ public class CentroEducativo {
             throw new IllegalArgumentException("Debe seleccionar un espacio válido.");
         }
 
-        // Regla 3: Espacio disponible
+
         if (!espacio.isDisponible()) {
             throw new IllegalStateException("No se puede reservar un espacio que no está disponible.");
         }
 
-        // Regla 4: Control de capacidad máxima
+
         if (nueva.getNumAsistentes() <= 0 || nueva.getNumAsistentes() > espacio.getCapacidad()) {
             throw new IllegalArgumentException("El número de asistentes (" + nueva.getNumAsistentes() +
                     ") supera la capacidad del espacio (" + espacio.getCapacidad() + ").");
         }
 
-        // Regla 5: Hora fin posterior a hora inicio
+
         if (nueva.getHoraInicio() == null || nueva.getHoraFin() == null || !nueva.getHoraFin().isAfter(nueva.getHoraInicio())) {
             throw new IllegalArgumentException("La hora de finalización debe ser posterior a la hora de inicio.");
         }
 
-        // Reglas 6, 7 y 8: Control de solapamientos (reservas consecutivas sí permitidas)
+
         for (Reserva r : reservas) {
             if (r.getEstado() == EstadoReserva.CANCELADA) continue;
             if (!r.getFecha().equals(nueva.getFecha())) continue;

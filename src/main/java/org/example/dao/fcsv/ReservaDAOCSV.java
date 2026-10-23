@@ -27,7 +27,7 @@ public class ReservaDAOCSV implements ReservaDAO {
                 if (linea.trim().isEmpty()) continue;
                 String[] p = linea.split(";");
 
-                // El CSV de la profesora tiene 9 columnas en total
+
                 if (p.length >= 9) {
                     String idReserva = p[0].trim();
                     LocalDate fecha = LocalDate.parse(p[1].trim());
@@ -35,11 +35,10 @@ public class ReservaDAOCSV implements ReservaDAO {
                     LocalTime horaFin = LocalTime.parse(p[3].trim());
                     EstadoReserva estado = EstadoReserva.valueOf(p[4].trim().toUpperCase());
 
-                    // p[5] es el motivo de la reserva ("Práctica de programación"). Lo omitimos.
 
                     String idProf = p[6].trim();
                     String idEsp = p[7].trim();
-                    int asistentes = Integer.parseInt(p[8].trim()); // Ahora sí lee el número al final
+                    int asistentes = Integer.parseInt(p[8].trim());
 
                     Profesor prof = profesores.stream()
                             .filter(pr -> pr.getIdProfesor().equalsIgnoreCase(idProf))
@@ -68,7 +67,6 @@ public class ReservaDAOCSV implements ReservaDAO {
                 String idProf = (r.getProfesor() != null) ? r.getProfesor().getIdProfesor() : "";
                 String idEsp = (r.getEspacio() != null) ? r.getEspacio().getIdEspacio() : "";
 
-                // Guardamos respetando la estructura de 9 columnas (ponemos "-" en el motivo)
                 bw.write(r.getIdReserva() + ";" + r.getFecha() + ";" + r.getHoraInicio() + ";" +
                         r.getHoraFin() + ";" + r.getEstado().name() + ";-;" +
                         idProf + ";" + idEsp + ";" + r.getNumAsistentes());

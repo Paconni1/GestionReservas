@@ -196,10 +196,35 @@ public class MainFX extends Application {
         VBox b=new VBox(10);b.setPadding(new Insets(30));Label t=new Label("NUEVA RESERVA");t.setStyle("-fx-font-size:22px;-fx-font-weight:bold;");b.getChildren().addAll(t,new Label("ID"),id,new Label("Fecha"),fecha,new Label("Profesor"),profesor,new Label("Espacio"),espacio,new Label("Hora inicio (HH:mm)"),inicio,new Label("Hora fin (HH:mm)"),fin,new Label("Asistentes"),asist,guardar);return b;
     }
 
-    private <T> void cargar(TableView<T> tabla,java.util.List<T> datos){tabla.setItems(FXCollections.observableArrayList(datos));tabla.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);}
-    private VBox contenedor(String titulo,TableView<?> tabla,Button... botones){VBox b=new VBox(12);b.setPadding(new Insets(25));Label t=new Label(titulo);t.setStyle("-fx-font-size:22px;-fx-font-weight:bold;");HBox acciones=new HBox(10,botones);VBox.setVgrow(tabla,Priority.ALWAYS);b.getChildren().addAll(t,tabla,acciones);return b;}
-    private VBox formulario(String titulo,Control[] controles,String[] etiquetas){VBox b=new VBox(10);b.setPadding(new Insets(30));Label t=new Label(titulo);t.setStyle("-fx-font-size:22px;-fx-font-weight:bold;");b.getChildren().add(t);for(int i=0;i<controles.length;i++){if(i<etiquetas.length)b.getChildren().add(new Label(etiquetas[i]));b.getChildren().add(controles[i]);}return b;}
-    private TextField campo(String prompt){TextField f=new TextField();f.setPromptText(prompt);return f;}
+    private <T> void cargar(TableView<T> tabla,java.util.List<T> datos){
+        tabla.setItems(FXCollections.observableArrayList(datos));
+        tabla.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+    }
+    private VBox contenedor(String titulo,TableView<?> tabla,Button... botones){
+        VBox b=new VBox(12);b.setPadding(new Insets(25));
+        Label t=new Label(titulo);
+        t.setStyle("-fx-font-size:22px;-fx-font-weight:bold;");
+        HBox acciones=new HBox(10,botones);
+        VBox.setVgrow(tabla,Priority.ALWAYS);
+        b.getChildren().addAll(t,tabla,acciones);
+        return b;
+    }
+    private VBox formulario(String titulo,Control[] controles,String[] etiquetas){
+        VBox b=new VBox(10);
+        b.setPadding(new Insets(30));
+        Label t=new Label(titulo);
+        t.setStyle("-fx-font-size:22px;-fx-font-weight:bold;");
+        b.getChildren().add(t);
+        for(int i=0;i<controles.length;i++){
+            if(i<etiquetas.length)b.getChildren().add(new Label(etiquetas[i]));
+            b.getChildren().add(controles[i]);
+        }return b;
+    }
+    private TextField campo(String prompt){
+        TextField f=new TextField();
+        f.setPromptText(prompt);
+        return f;
+    }
     private void guardarDatos(){
         try{
             centro.guardarTodo();
@@ -208,6 +233,10 @@ public class MainFX extends Application {
             mostrarError("Error al guardar",e.getMessage());
         }
     }
-    protected void mostrarInfo(String m){new Alert(Alert.AlertType.INFORMATION,m,ButtonType.OK).showAndWait();}
-    protected void mostrarError(String titulo,String m){new Alert(Alert.AlertType.ERROR,m==null?"Error desconocido":m,ButtonType.OK).showAndWait();}
+    protected void mostrarInfo(String m){
+        new Alert(Alert.AlertType.INFORMATION,m,ButtonType.OK).showAndWait();
+    }
+    protected void mostrarError(String titulo,String m){
+        new Alert(Alert.AlertType.ERROR,m==null?"Error desconocido":m,ButtonType.OK).showAndWait();
+    }
 }
